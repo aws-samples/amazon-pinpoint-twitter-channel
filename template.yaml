@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Amazon Pinpoint Twitter Channel.  This application will deliver Amazon Pinpoint triggered messages to Twitter using Twitters DirectMessage API.  Written in Python3.
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  TOKEN:
+    Type: String
+    Description: TOKEN for Twitter application
+  TOKENSECRET:
+    Type: String
+    Description: TOKEN_SECRET for Twitter application
+  CONSUMERKEY:
+    Type: String
+    Description: CONSUMER_KEY for Twitter application
+  CONSUMERSECRET:
+    Type: String
+    Description: CONSUMER_SECRET for Twitter application
+
+Globals:
+  Function:
+    Timeout: 30
+
+Resources:
+  PinpointTwitterChannelFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: AmazonPinpointTwitterChannel
+      CodeUri: pinpointtwitter/
+      Policies:
+        - Statement:
+          - Sid: PinpointPutEvents
+            Effect: Allow
+            Action: mobiletargeting:PutEvents
+            Resource: !Sub arn:${AWS::Partition}:mobiletargeting:${AWS::Region}:${AWS::AccountId}:*
+      Handler: app.lambda_handler
+      Runtime: python3.7
+      Environment:
+        Variables:
+          CONSUMER_SECRET:
+            Ref: CONSUMERSECRET
+          TOKEN:
+            Ref: TOKEN
+          CONSUMER_KEY:
+            Ref: CONSUMERKEY
+          TOKEN_SECRET:
+            Ref: TOKENSECRET
+
+  PinpointInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref PinpointTwitterChannelFunction
+      Principal: !Sub pinpoint.${AWS::Region}.amazonaws.com
+      SourceArn: !Sub arn:${AWS::Partition}:mobiletargeting:${AWS::Region}:${AWS::AccountId}:apps/*
+
+Outputs:
+  PinpointTwitterChannelFunction:
+    Description: "A function invoked by an Amazon Pinpoint Campaign or Journey that sends a message to a user through Twitter"
+    Value: !GetAtt PinpointTwitterChannelFunction.Arn
