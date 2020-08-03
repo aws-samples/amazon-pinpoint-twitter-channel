@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Amazon Pinpoint Twitter Channel.  This application will deliver Amazon Pinpoint triggered messages to Twitter using Twitters DirectMessage API.  Written in Python3.
+Description: Amazon Pinpoint Twitter Channel.  This application will deliver Amazon Pinpoint triggered messages to Twitter using Twitter DirectMessage API.  Written in Python3.
 Transform: AWS::Serverless-2016-10-31
 
 Parameters:
@@ -19,6 +19,19 @@ Parameters:
 Globals:
   Function:
     Timeout: 30
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: amazon-pinpoint-twitter-channel
+    Description: Amazon Pinpoint Twitter Channel.  This application will deliver Amazon Pinpoint triggered messages to Twitter using Twitter DirectMessage API.  Written in Python3.
+    Author: Amazon Pinpoint
+    SpdxLicenseId: MIT-0
+    LicenseUrl: LICENSE
+    ReadmeUrl: README.md
+    Labels: ['amazon-pinpoint', 'pinpoint', 'custom-channel', 'twitter', 'python']
+    HomePageUrl: https://aws.amazon.com/pinpoint
+    SemanticVersion: 1.0.1
+    SourceCodeUrl: https://github.com/aws-samples/amazon-pinpoint-twitter-channel
 
 Resources:
   PinpointTwitterChannelFunction:
